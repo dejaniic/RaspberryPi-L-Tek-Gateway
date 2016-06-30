@@ -11,10 +11,10 @@ global client
 continuousRead = []
 # Klemen Skoda, FireFly
 # Configuration values needed to connect to IBM IoT Cloud
-orgID = "quickstart" #For registered connection, replace with your organisation ID.
-deviceType = "raspberrypi" #For registered connection, replace with your Device Type.
-deviceID = "" #For registered connection, replace with your Device ID.
-auth_token = "" #For registered connection, replace with your Device authentication token.
+orgID = "quickstart" 		#For registered connection, replace with your organisation ID.
+deviceType = "raspberrypi"  #For registered connection, replace with your Device Type.
+deviceID = "" 				#For registered connection, replace with your Device ID.
+auth_token = "" 			#For registered connection, replace with your Device authentication token.
 
 class BLEdevice:
 
