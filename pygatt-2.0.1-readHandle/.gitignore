@@ -1,0 +1,19 @@
+*.py[co]
+*.egg-info/
+*.egg
+cover/
+.coverage
+output.xml
+flake8.log
+nosetests.xml
+pylint.log
+.idea/
+dist/
+# Vim
+*.swp
+# Log files
+*.log
+# test file
+pygatt/bluegiga/test.py
+.tox
+.eggs/

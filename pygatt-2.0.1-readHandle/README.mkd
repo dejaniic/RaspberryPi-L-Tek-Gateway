@@ -1,0 +1,75 @@
+# pygatt - Python Module for Bluetooth LE Generic Attribute Profile (GATT).
+
+This Module allows reading and writing to GATT descriptors on devices such as
+fitness trackers, sensors, and anything implementing standard GATT Descriptor
+behavior.
+
+pygatt provides a Pythonic API by wrapping two different backends:
+
+* BlueZ (requires Linux), using the `gatttool` command-line utility.
+* Bluegiga's BGAPI, compatible with USB adapters like the BLED112.
+
+## Motivation
+
+Despite the popularity of BLE, we have yet to find a good programming interface
+for it on desktop computers. Since most peripherals are designed to work with
+smartphones, this space is neglected. One interactive interface, BlueZ's
+`gatttool`, is functional but difficult to use programatically. BlueZ itself
+obviously works, but the interface leaves something to be desired and only
+works in Linux.
+
+## Requirements
+
+* Python 2.7
+* BlueZ 5.5 or greater (with gatttool) - required for the gatttool backend only.
+    * Tested on 5.18, 5.21 and 5.35.
+
+## Installation
+
+Install `pygatt` with pip:
+
+    $ pip install https://github.com/stratosinc/pygatt
+
+The BlueZ backend is not supported by default as it requires `pexpect`, which
+can only be installed in a UNIX-based environment. If you wish to use that
+backend, install the optional dependencies with:
+
+    $ pip install pygatt[GATTTOOL]
+
+## Example Use
+
+The primary API for users of this library is provided by
+`pygatt.backends.BLEBackend` and `pygatt.BLEDevice`. After initializing an
+instance of the preferred backend (available implementations are found in
+`pygatt.backends`, use the `BLEBackend.connect` method to connect to a device
+and get an instance of `BLEDevice.`
+
+```python
+import pygatt.backends
+
+# The BGAPI backend will attemt to auto-discover the serial device name of the
+# attached BGAPI-compatible USB adapter.
+adapter = pygatt.backends.BGAPIBackend()
+device = adapter.connect('01:23:45:67:89:ab')
+value = device.char_read("a1e8f5b1-696b-4e4c-87c6-69dfe0b0093b")
+```
+
+Note that not all backends support connecting to more than 1 device at at time,
+so calling `BLEBackend.connect` again may terminate existing connections.
+
+## Authors
+
+- Jeff Rowberg @jrowberg https://github.com/jrowberg/bglib
+- Greg Albrecht @ampledata https://github.com/ampledata/pygatt
+- Christopher Peplin @peplin https://github.com/stratosinc/pygatt
+- Morten Kjaergaard @mkjaergaard https://github.com/mkjaergaard/pygatt
+- Michael Saunby @msaunby https://github.com/msaunby/ble-sensor-pi
+- Steven Sloboda <sloboste@umich.edu> https://github.com/sloboste
+
+Derived from the work of several others, see NOTICE.
+
+## License
+
+Copyright 2015 Stratos Inc. and Orion Labs
+
+Apache License, Version 2.0 and MIT License. See LICENSE.
