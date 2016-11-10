@@ -1,6 +1,6 @@
 # RaspberryPi-FireFly-Gateway
 
-Tutorial for use ca be found on IBM recipes https://developer.ibm.com/recipes/?post_type=tutorials&s=firefly
+Tutorial for use can be found on IBM recipes https://developer.ibm.com/recipes/?post_type=tutorials&s=firefly
 
 This code was created and tested on Raspberry Pi3.
 Code allows you to connect to IBM Watson IoT Platform with MQTT and command FireFly Flytag modules.
