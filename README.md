@@ -1,4 +1,4 @@
-# RaspberryPi-FireFly-Gateway
+# RaspberryPi-L-Tek-Gateway
 
 Tutorial for use can be found on IBM recipes https://developer.ibm.com/recipes/?post_type=tutorials&s=firefly
 
