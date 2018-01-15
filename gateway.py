@@ -381,17 +381,20 @@ try:
         connect = 0;
         for i in range(len(devices)):
             if(connect<3):
-                if(devices[i]['name'].startswith('FF-')):
-                    print(devices[i]['address'])
-                    print(devices[i]['name'][3:6])
-                    device = BLEdevice(devices[i]['name'][3:6], devices[i]['address'], 5, '0001305')
-                    t = myThread(device.deviceCount, device)
-                    t.start()
-                    continuousRead.append(t)
-                    print(continuousRead)
-                    print(t.device.deviceCount)
-                    connect+=1
-                
+                try:
+                    if(devices[i]['name'].startswith('FF-')):
+                        print(devices[i]['address'])
+                        print(devices[i]['name'][3:6])
+                        device = BLEdevice(devices[i]['name'][3:6], devices[i]['address'], 5, '0001305')
+                        t = myThread(device.deviceCount, device)
+                        t.start()
+                        continuousRead.append(t)
+                        print(continuousRead)
+                        print(t.device.deviceCount)
+                        connect+=1
+                except Exception as e:
+                    #print e
+                    pass
 
     while(True):
         print("main")
