@@ -11,10 +11,10 @@ global client
 continuousRead = []
 # Klemen Skoda, FireFly
 # Configuration values needed to connect to IBM IoT Cloud
-orgID = "quickstart" 		#For registered connection, replace with your organisation ID.
-deviceType = "raspberrypi"  #For registered connection, replace with your Device Type.
-deviceID = "" 				#For registered connection, replace with your Device ID.
-auth_token = "" 			#For registered connection, replace with your Device authentication token.
+orgID = "ac6zwh" 		#For registered connection, replace with your organisation ID.
+deviceType = "Rpi"  #For registered connection, replace with your Device Type.
+deviceID = "FF-Rpi-GW" 				#For registered connection, replace with your Device ID.
+auth_token = "dejan123" 			#For registered connection, replace with your Device authentication token.
 
 class BLEdevice:
 
@@ -68,11 +68,12 @@ def on_connect(client, userdata, flags, rc):
     if(orgID != 'quickstart'):
         #Subscribing in on_connect() means tha if we lose the connection and reconnect the subscription will be renewed.
         client.subscribe("iot-2/cmd/+/fmt/json", 0)
-        print "subscribed to iot-2/cmd/+/fmt/json"
+        print("subscribed to iot-2/cmd/+/fmt/json")
 
 #The callback for then a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic + " " +str(msg.payload))
+    print("\n----------------------------------------------")
+    print("MSG received on TOPIC: " + msg.topic + "\npayload: " +str(msg.payload) + "\n")
 
     if(len(msg.payload)>13):
         nodeID = msg.payload[8:11]
@@ -139,7 +140,7 @@ def on_message(client, userdata, msg):
                     t.start()
                     continuousRead.append(t)
                     print(continuousRead)
-                    print(t.device.deviceCount)
+                    print("Added new device, number of connected devices: " + t.device.deviceCount)
                 
                 
             elif(command == '2'):
@@ -174,7 +175,7 @@ def on_message(client, userdata, msg):
 
 def writeCommand(firefly, endNode, cmd):
     cmd = endNode + cmd
-    print(cmd)
+    print("Writing command " + cmd + "to sensor with ID: " + endNode)
     firefly.char_write_handle(24, map(ord, cmd))
 
 def readChar(firefly,mac):
@@ -271,6 +272,7 @@ def tryConnect(adapter2, mac):
         try:
             print("Trying to connect...")
             if(error > 3):
+                print("Could not reconnect.")
                 return 'null'
             else:
                 return(adapter2.connect(mac, 5, 'random'))
@@ -282,23 +284,25 @@ def tryConnect(adapter2, mac):
             pass
 
 def scanForDevices():
-    print("Scanning...")
-    return(adapter.scan(3,True))
+    tmp = adapter.scan(3,True)
+    print("Filter devices to use only firefly devices")
+    return([device for device in tmp if str(device["name"]).startswith("FF-")])
     
 def findAddress(endNode, adapter1):
-    print(endNode)
+    print("Finding address for endNode: " + endNode)
     endNode = "FF-" + endNode
-    print(endNode)
+    print("endNode ID: " + endNode)
+    print("List of all connected devices:")
     print(devices)
+    print("\n")
     for i in range(len(devices)):
         if(devices[i]['name'] == endNode):
-            print(devices[i]['address'])
+            print("Found device: " + devices[i]['address'])
             return(devices[i]['address'])
     print("Device not present")
     return("null")
 
 def publishMQTT(data, clientMQTT):
-
     g2x = (data[4] << 8) | (data[5])
     g2y = (data[6] << 8) | (data[7])
     g2z = (data[8] << 8) | (data[9])
@@ -342,7 +346,8 @@ def publishMQTT(data, clientMQTT):
     humid = ((125.0 * rh) / 65536) - 6
 
     analog = data[30]
-    
+
+    print("Publishing MQTT msg")
     sendData = ("{\"d\": {\"ID\":\"FF-%c%c%c\",\"gX\":%.2f,\"gY\":%.2f,\"gZ\":%.2f,\"aX\":%.2f,\"aY\":%.2f,\"aZ\":%.2f,\"mX\":%d,\"mY\":%d,\"mZ\":%d,\"Lux\": %d, \"Temp\": %.1f,\"RelHum\" :%.1f, \"Analog\":%d}}" % (data[0],data[1], data[2], gx, gy, gz, a1x, a1y, a1z, mx, my, mz, lux, temp, humid, analog))
     clientMQTT.publish("iot-2/evt/testing/fmt/json", sendData)
 
@@ -352,7 +357,7 @@ try:
         mac = open('/sys/class/net/eth0/address').read()
         mac = mac.replace(":","")
         mac = mac[0:12]
-        print mac
+        print(mac)
         client = mqtt.Client("d:quickstart:"+deviceType+":"+mac)
         print("d:quickstart:"+ deviceType +":" + mac)
 
@@ -370,12 +375,15 @@ try:
         client.username_pw_set("use-token-auth", auth_token)
     
     
-    
+    print("Get adapter obj")
     adapter = pygatt.backends.GATTToolBackend()
     adapter.reset()
     adapter.start()
+    print("Scanning for devices...")
     devices = scanForDevices()
+    print("List of connected devices: ")
     print(devices)
+    print("\n")
 
     if(orgID == 'quickstart'):
         connect = 0;
