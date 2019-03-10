@@ -9,7 +9,7 @@ global devices
 global continuousRead
 global client
 continuousRead = []
-# Klemen Skoda, FireFly
+# Klemen Skoda, FireFly, EDITED by Luka P.
 # Configuration values needed to connect to IBM IoT Cloud
 orgID = "ac6zwh" 		#For registered connection, replace with your organisation ID.
 deviceType = "Rpi"  #For registered connection, replace with your Device Type.
