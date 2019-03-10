@@ -1,0 +1,1 @@
+[{"id":"89dbab46.381ff8","type":"function","z":"257d981e.db6608","name":"Adding timestamp in json","func":"var data = msg;\ndata.payload.d.timestamp = Date.now();\nreturn data;","outputs":1,"noerr":0,"x":362.77777777777777,"y":996.6666666666666,"wires":[["375afe5b.e031c2","f989278a.be9b68"]]}]
